@@ -46,7 +46,7 @@ class bst {
          *@return the depth of the tree
          */
         int max_level() {
-            return this->root ? this->root->max_level() : 0;
+            return level_helper(root);
         }
 
         /**
@@ -58,12 +58,42 @@ class bst {
             return this->root ? this->root->left->num_left() + this->root->right->num_left() : 0;
         }
 
+        bool is_balanced() {
+            return is_balanced_helper(root);
+        }
+
+        // TODO: IMPLEMENT is_valid()
+
     private:
         /** The root of the tree */
         bstnode<T> *root;
 
         /** The number of nodes in the tree */
         int size;
+
+	bool balanced_helper(bstnode *n) {
+		if (!n) {
+			return true;
+		} else if (!balanced_helper(n->left) || !balanced_helper(n->right)) {
+			return false;
+		} else {
+			return abs(n->left->max_level() - n->right->max_level()) <= 1;
+		}
+	}
+
+    int level_helper(bstnode *node) {
+        if (!node) {
+            return 0;
+        } else if (node->left && node->right) {
+            return 1 + std::max(level_helper(node->left), level_helper(node->right));
+        } else {
+            if (node->left) {
+                return 1 + level_helper(node->left);
+            } else {
+                return 1 + level_helper(node->right);
+            }
+        }
+    }
 };
 
 #endif
